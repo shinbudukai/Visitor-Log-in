@@ -5,7 +5,7 @@ using UnityEngine;
 public class ReadInput : MonoBehaviour
 {
     string nameInput, companyInput, personVisitingInput, purposeInput;
-    bool isUsInput;
+    bool isUsInput, isConsentInput;
     public void GetNameInput(string name)
     {
         nameInput = name;
@@ -28,6 +28,12 @@ public class ReadInput : MonoBehaviour
     {
         isUsInput = isUs;
         Debug.Log(isUsInput);
+    }
+
+    public void ConsentInput(bool isConsent)
+    {
+        isConsentInput = isConsent;
+        Debug.Log(isConsentInput);
     }
 
     public void PurposeInput(string purpose)
