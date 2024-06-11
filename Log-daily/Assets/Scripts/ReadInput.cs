@@ -5,10 +5,12 @@ using UnityEngine.UI;
 
 public class ReadInput : MonoBehaviour
 {
+    [SerializeField] Toggle isUsToggleYes, isUsToggleNo;
     [SerializeField] Button printButton;
     string nameInput, companyInput, personVisitingInput, purposeInput;
-    bool isUsInput, isConsentInput;
+    bool isUsInputYes, isUsInputNo, isConsentInput;
     bool isEmpty = false;
+    private RectTransform FieldPos;
 
     private Color disableColor = Color.grey;
     private Color enableColor = Color.white;
@@ -32,11 +34,22 @@ public class ReadInput : MonoBehaviour
         Debug.Log(personVisitingInput);
     }
 
-    public void UsInput(bool isUs)
+    public void UsInputYes(bool isUs)
     {
-        isUsInput = isUs;
-        Debug.Log(isUsInput);
+        isUsInputYes = isUs;
+    
+        
+        Debug.Log(isUsInputYes);
     }
+
+    public void UsInputNo(bool isUs)
+    {
+        isUsInputNo = isUs;
+     
+        Debug.Log(isUsInputNo);
+    }
+
+
 
     public void ConsentInput(bool isConsent)
     {
@@ -52,8 +65,12 @@ public class ReadInput : MonoBehaviour
 
     private void Start()
     {
+        FieldPos = gameObject.GetComponent<RectTransform>();
+        FieldPos.anchoredPosition = Vector2.zero;
         nameInput = string.Empty;
         companyInput = string.Empty;
+        personVisitingInput = string.Empty;
+        purposeInput = string.Empty;
 
         printButton.enabled = false;
         printButton.gameObject.GetComponent<Image>().color = disableColor;
@@ -66,27 +83,39 @@ public class ReadInput : MonoBehaviour
 
     private void InputCheck()
     {
-        if (isConsentInput && !EmptyStringCheck(nameInput) && !EmptyStringCheck(companyInput))
+        if (isConsentInput && !EmptyStringCheck(nameInput) && !EmptyStringCheck(companyInput) && !EmptyStringCheck(personVisitingInput) && !EmptyStringCheck(purposeInput))
         {
+          
             printButton.gameObject.GetComponent<Image>().color = enableColor;
             printButton.enabled = true;
         }
 
         else
         {
+           
             printButton.gameObject.GetComponent<Image>().color = disableColor;
             printButton.enabled = false;
         }
     }
 
-    public bool EmptyStringCheck(string s)
+    private bool EmptyStringCheck(string s)
     {
         return s == string.Empty;
 
 
     }
 
+    public void FieldShifting()
+    {
+        FieldPos.anchoredPosition = new Vector2(0, 200);
+    }
 
-   
+    public void FieldShiftingBack()
+    {
+        FieldPos.anchoredPosition = Vector2.zero;
+    }
+
+
+
 
 }

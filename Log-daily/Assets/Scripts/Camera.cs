@@ -27,7 +27,7 @@ public class Camera : MonoBehaviour
             webcam = new WebCamTexture(WebCamTexture.devices[1].name);
         }
 
-        webcam.requestedWidth = 800;
+        webcam.requestedWidth = 800; 
         webcam.requestedHeight = 600;
     }
 
