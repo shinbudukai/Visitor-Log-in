@@ -17,7 +17,7 @@ namespace UnityEngine.UI.Extensions
 
     [RequireComponent(typeof(RectTransform))]
     [AddComponentMenu("UI/Extensions/AutoComplete ComboBox")]
-    public class AutoCompleteComboBox : MonoBehaviour
+    public class ListHandle : MonoBehaviour
     {
         public Color disabledTextColor;
         public DropDownListItem SelectedItem { get; private set; } //outside world gets to get this, not set it
@@ -211,7 +211,7 @@ namespace UnityEngine.UI.Extensions
             }
             else
             {
-                Debug.LogWarning($"{nameof(AutoCompleteComboBox)}.{nameof(AddItem)}: items may only exists once. '{item}' can not be added.");
+                Debug.LogWarning($"{nameof(ListHandle)}.{nameof(AddItem)}: items may only exists once. '{item}' can not be added.");
             }
         }
 
@@ -237,7 +237,7 @@ namespace UnityEngine.UI.Extensions
             var uniqueOptions = newOptions.Distinct().ToList();
             if (newOptions.Count != uniqueOptions.Count)
             {
-                Debug.LogWarning($"{nameof(AutoCompleteComboBox)}.{nameof(SetAvailableOptions)}: items may only exists once. {newOptions.Count - uniqueOptions.Count} duplicates.");
+                Debug.LogWarning($"{nameof(ListHandle)}.{nameof(SetAvailableOptions)}: items may only exists once. {newOptions.Count - uniqueOptions.Count} duplicates.");
             }
 
             this.AvailableOptions.Clear();
@@ -254,7 +254,7 @@ namespace UnityEngine.UI.Extensions
             var uniqueOptions = newOptions.Distinct().ToList();
             if (newOptions.Length != uniqueOptions.Count)
             {
-                Debug.LogWarning($"{nameof(AutoCompleteComboBox)}.{nameof(SetAvailableOptions)}: items may only exists once. {newOptions.Length - uniqueOptions.Count} duplicates.");
+                Debug.LogWarning($"{nameof(ListHandle)}.{nameof(SetAvailableOptions)}: items may only exists once. {newOptions.Length - uniqueOptions.Count} duplicates.");
             }
 
             this.AvailableOptions.Clear();

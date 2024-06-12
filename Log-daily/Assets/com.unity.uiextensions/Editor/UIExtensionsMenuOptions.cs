@@ -801,7 +801,7 @@ namespace UnityEditor.UI
 			GameObject arrowButton = AddButtonAsChild(autoCompleteComboBoxRoot);
 
 			//Setup ComboBox
-			var autoCompleteComboBox = autoCompleteComboBoxRoot.AddComponent<AutoCompleteComboBox>();
+			var autoCompleteComboBox = autoCompleteComboBoxRoot.AddComponent<ListHandle>();
 			var cbbRT = autoCompleteComboBoxRoot.GetComponent<RectTransform>();
 
 			//Setup Template
