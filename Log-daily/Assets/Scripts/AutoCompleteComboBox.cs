@@ -48,6 +48,7 @@ namespace UnityEngine.UI.Extensions
         private RectTransform _itemsPanelRT;
         private Canvas _canvas;
         private RectTransform _canvasRT;
+        
 
         private ScrollRect _scrollRect;
 
@@ -59,6 +60,9 @@ namespace UnityEngine.UI.Extensions
         private GameObject itemTemplate;
 
         public string Text { get; private set; }
+
+        [SerializeField] Sprite itemImage;
+        [SerializeField] Font itemFont;
 
         [SerializeField]
         private float _scrollBarWidth = 20.0f;
@@ -177,7 +181,7 @@ namespace UnityEngine.UI.Extensions
 
                 _scrollRect = _scrollPanelRT.GetComponent<ScrollRect>();
                 _scrollRect.scrollSensitivity = _rectTransform.sizeDelta.y / 2;
-                _scrollRect.movementType = ScrollRect.MovementType.Clamped;
+              //  _scrollRect.movementType = ScrollRect.MovementType.Clamped;
                 _scrollRect.content = _itemsPanelRT;
 
                 itemTemplate = _rectTransform.Find("ItemTemplate").gameObject;
@@ -314,6 +318,17 @@ namespace UnityEngine.UI.Extensions
                 {
                     itemObjs[i].name = "Item " + i + " " + _panelItems[i];
                     itemObjs[i].transform.Find("Text").GetComponent<Text>().text = AvailableOptions[i]; //set the text value
+                    itemObjs[i].transform.Find("Text").GetComponent<Text>().font = itemFont; //set the font
+                    itemObjs[i].transform.Find("Text").GetComponent<Text>().alignment = TextAnchor.MiddleLeft;  //set text's alignment
+
+                    itemObjs[i].transform.Find("Text").GetComponent<RectTransform>().offsetMin = new Vector2(15, 0);
+
+                    itemObjs[i].transform.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 570);
+
+                    //Add items components 
+                    Image tempImage = itemObjs[i].GetComponent<Image>();
+                    tempImage.sprite = itemImage;
+
 
                     Button itemBtn = itemObjs[i].GetComponent<Button>();
                     itemBtn.onClick.RemoveAllListeners();
@@ -334,7 +349,7 @@ namespace UnityEngine.UI.Extensions
         /// <param name="item"></param>
         private void OnItemClicked(string item)
         {
-            //Debug.Log("item " + item + " clicked");
+            Debug.Log("item " + item + " clicked");
             Text = item;
             _mainInput.text = Text;
             ToggleDropdownPanel(true);
@@ -545,14 +560,14 @@ namespace UnityEngine.UI.Extensions
             _overlayRT.gameObject.SetActive(true);
         }
 
-        //private void Update()
-        //{
-        //    // Ensure the GameObject is active
-        //    if (!_overlayRT.gameObject.activeSelf)
-        //    {
-        //        _overlayRT.gameObject.SetActive(true);
-        //    }
-        //}
+        private void Update()
+        {
+            // Ensure the GameObject is active
+            if (!_overlayRT.gameObject.activeSelf)
+            {
+                _overlayRT.gameObject.SetActive(true);
+            }
+        }
 
 
     }

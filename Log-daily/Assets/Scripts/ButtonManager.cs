@@ -5,15 +5,13 @@ using UnityEngine.UI;
 
 public class ButtonManager : MonoBehaviour
 {
-    [SerializeField] GameObject welcomeScence, takephotoScene, retakeScene, inputScene;
+    [SerializeField] GameObject welcomeScence, takephotoScene, retakeScene, inputScene, signOutScene;
    
 
     private void Start()
     {
-        welcomeScence.SetActive(true);
-        takephotoScene.SetActive(false);
-        inputScene.SetActive(false);
-        retakeScene.SetActive(false);
+        //Begin at the home screen
+        HomeButton();
     }
 
     public void SignInButton()
@@ -49,6 +47,12 @@ public class ButtonManager : MonoBehaviour
         takephotoScene.SetActive(true);
     }
 
- 
+    public void SignOutButton()
+    {
+        welcomeScence.SetActive(false);
+        signOutScene.SetActive(true);
+    }
+
+
 
 }
