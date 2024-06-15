@@ -2,14 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.UI.Extensions;
 
 public class ReadInput : MonoBehaviour
 {
     [SerializeField] Toggle isUsToggleYes, isUsToggleNo;
     [SerializeField] Button printButton;
+    [SerializeField] ListHandle listHandle;
+
     string nameInput, companyInput, personVisitingInput, purposeInput;
-    bool isUsInputYes, isUsInputNo, isConsentInput;
-    bool isEmpty = false;
+    bool isUsInputYes = true;  //The check default is Yes
+    bool isUsInputNo, isConsentInput;
+    public string tempInfor { get; private set; }
+
+
     private RectTransform FieldPos;
 
     private Color disableColor = Color.grey;
@@ -21,7 +27,7 @@ public class ReadInput : MonoBehaviour
         Debug.Log(nameInput);
         
     }
-
+    
     public void CompanyInput(string company)
     {
         companyInput = company;
@@ -115,7 +121,60 @@ public class ReadInput : MonoBehaviour
         FieldPos.anchoredPosition = Vector2.zero;
     }
 
+    private string getUsStatus()
+    {
+        if (isUsInputYes)
+        {
+            return "Yes";
+        }
 
+        else return "No";
+        
+    }
+
+    //For print label button
+    public void getVisitor()
+    {
+        Visitor visitor = new Visitor(nameInput, companyInput, getUsStatus());
+        Debug.Log(visitor.GetInfor());
+
+        listHandle.AddItem(visitor.GetVisitorName());
+        tempInfor = $"{visitor.vName} | {visitor.vCompany} | Us: {visitor.vIsUs}";
+
+    }
+    
+
+
+
+    public class Visitor
+    {
+        public string vName { get; private set; }
+        public string vCompany { get; private set; }
+        public string vIsUs { get; private set; }
+
+        public Visitor(string name, string company, string isUs)
+        {
+            this.vName = name;
+            this.vCompany = company;
+            this.vIsUs = isUs;
+        }
+
+
+        public string GetInfor()
+        {
+            string temp = $"{vName} | {vCompany} | Us: {vIsUs}";
+            return temp;
+        }
+
+        public string GetVisitorName()
+        {
+            return vName;
+        }
+
+    }
 
 
 }
+
+//Make this class derive from Mono so it can be Serialized and showed in the inpsector
+

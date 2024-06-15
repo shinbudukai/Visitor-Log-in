@@ -61,6 +61,7 @@ namespace UnityEngine.UI.Extensions
 
         public string Text { get; private set; }
 
+        [SerializeField] ReadInput visitor;
         [SerializeField] Sprite itemImage;
         [SerializeField] Font itemFont;
 
@@ -206,23 +207,33 @@ namespace UnityEngine.UI.Extensions
         /// Adds the item to <see cref="this.AvailableOptions"/> if it is not a duplicate and rebuilds the panel.
         /// </summary>
         /// <param name="item">Item to add.</param>
+        /// 
+
+
+
+        //Use this function to add item
         public void AddItem(string item)
         {
+   
+
             if (!this.AvailableOptions.Contains(item))
             {
                 this.AvailableOptions.Add(item);
                 this.RebuildPanel();
             }
+
             else
             {
-                Debug.LogWarning($"{nameof(ListHandle)}.{nameof(AddItem)}: items may only exists once. '{item}' can not be added.");
+                Debug.LogWarning($"{nameof(ListHandle)}.{nameof(AddItem)}: Your name may only exists once. '{item}' can not be added.");
             }
         }
+
 
         /// <summary>
         /// Removes the item from <see cref="this.AvailableOptions"/> and rebuilds the panel.
         /// </summary>
         /// <param name="item">Item to remove.</param>
+
         public void RemoveItem(string item)
         {
             if (this.AvailableOptions.Contains(item))
@@ -347,12 +358,13 @@ namespace UnityEngine.UI.Extensions
         /// what happens when an item in the list is selected
         /// </summary>
         /// <param name="item"></param>
-        private void OnItemClicked(string item)
+        public void OnItemClicked(string item)
         {
             Debug.Log("item " + item + " clicked");
             Text = item;
             _mainInput.text = Text;
             ToggleDropdownPanel(true);
+            Debug.Log(visitor.tempInfor);
         }
 
         //private void UpdateSelected()
