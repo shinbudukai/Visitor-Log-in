@@ -32,6 +32,7 @@ public class ReadInput : MonoBehaviour
     {
         companyInput = company;
         Debug.Log(companyInput);
+        
     }
 
     public void PersonVisitingInput(string personVisiting)
@@ -138,7 +139,7 @@ public class ReadInput : MonoBehaviour
         Visitor visitor = new Visitor(nameInput, companyInput, getUsStatus());
         Debug.Log(visitor.GetInfor());
 
-        listHandle.AddItem(visitor.GetVisitorName());
+        listHandle.AddItem(visitor);
         tempInfor = $"{visitor.vName} | {visitor.vCompany} | Us: {visitor.vIsUs}";
 
     }
@@ -168,7 +169,7 @@ public class ReadInput : MonoBehaviour
 
         public string GetVisitorName()
         {
-            return vName;
+            return vName.ToLower();
         }
 
     }

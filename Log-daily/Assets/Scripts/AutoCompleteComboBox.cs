@@ -27,7 +27,7 @@ namespace UnityEngine.UI.Extensions
         /// <see cref="RemoveItem(string)"/> and <see cref="SetAvailableOptions(List{string})"/> methods as these also execute
         /// the required methods to update to the current collection.
         /// </summary>
-        public List<string> AvailableOptions;
+        public List<ReadInput.Visitor> AvailableOptions;
 
         //private bool isInitialized = false;
         private bool _isPanelActive = false;
@@ -52,10 +52,10 @@ namespace UnityEngine.UI.Extensions
 
         private ScrollRect _scrollRect;
 
-        private List<string> _panelItems; //items that will get shown in the drop-down
-        private List<string> _prunedPanelItems; //items that used to show in the drop-down
+        private List<ReadInput.Visitor> _panelItems; //items that will get shown in the drop-down
+        private List<ReadInput.Visitor> _prunedPanelItems; //items that used to show in the drop-down
 
-        private Dictionary<string, GameObject> panelObjects;
+        private Dictionary<ReadInput.Visitor, GameObject> panelObjects;
         
         private GameObject itemTemplate;
 
@@ -144,16 +144,24 @@ namespace UnityEngine.UI.Extensions
         public void Awake()
         {
             Initialize();
+           
         }
 
 		public void Start()
 		{
-			if (SelectFirstItemOnStart && AvailableOptions.Count > 0) {
-				ToggleDropdownPanel (false);
-				OnItemClicked (AvailableOptions [0]);
-			}
-           // RedrawPanel();
+            if (SelectFirstItemOnStart && AvailableOptions.Count > 0)
+            {
+                ToggleDropdownPanel(false);
+                OnItemClicked(AvailableOptions[0]);
+            }
+            // RedrawPanel();
+           
+
+
+
         }
+
+
 
         private bool Initialize()
         {
@@ -187,6 +195,11 @@ namespace UnityEngine.UI.Extensions
 
                 itemTemplate = _rectTransform.Find("ItemTemplate").gameObject;
                 itemTemplate.SetActive(false);
+
+                
+                
+
+
             }
             catch (System.NullReferenceException ex)
             {
@@ -194,10 +207,11 @@ namespace UnityEngine.UI.Extensions
                 Debug.LogError("Something is setup incorrectly with the dropdownlist component causing a Null Reference Exception");
                 success = false;
             }
-            panelObjects = new Dictionary<string, GameObject>();
+            panelObjects = new Dictionary<ReadInput.Visitor, GameObject>();
 
-            _prunedPanelItems = new List<string>();
-            _panelItems = new List<string>();
+            _prunedPanelItems = new List<ReadInput.Visitor>();
+            _panelItems = new List<ReadInput.Visitor>();
+            AvailableOptions = new List<ReadInput.Visitor>();
 
             RebuildPanel();
             return success;
@@ -212,11 +226,12 @@ namespace UnityEngine.UI.Extensions
 
 
         //Use this function to add item
-        public void AddItem(string item)
+        public void AddItem(ReadInput.Visitor item)
         {
-   
+
 
             if (!this.AvailableOptions.Contains(item))
+
             {
                 this.AvailableOptions.Add(item);
                 this.RebuildPanel();
@@ -224,7 +239,7 @@ namespace UnityEngine.UI.Extensions
 
             else
             {
-                Debug.LogWarning($"{nameof(ListHandle)}.{nameof(AddItem)}: Your name may only exists once. '{item}' can not be added.");
+                Debug.LogWarning($"{nameof(ListHandle)}.{nameof(AddItem)}: Your name may only exists once. '{item.GetVisitorName()}' can not be added.");
             }
         }
 
@@ -234,7 +249,7 @@ namespace UnityEngine.UI.Extensions
         /// </summary>
         /// <param name="item">Item to remove.</param>
 
-        public void RemoveItem(string item)
+        public void RemoveItem(ReadInput.Visitor item)
         {
             if (this.AvailableOptions.Contains(item))
             {
@@ -247,7 +262,7 @@ namespace UnityEngine.UI.Extensions
         /// Sets the given items as new content for the comboBox. Previous entries will be cleared.
         /// </summary>
         /// <param name="newOptions">New entries.</param>
-        public void SetAvailableOptions(List<string> newOptions)
+        public void SetAvailableOptions(List<ReadInput.Visitor> newOptions)
         {
             var uniqueOptions = newOptions.Distinct().ToList();
             if (newOptions.Count != uniqueOptions.Count)
@@ -264,7 +279,7 @@ namespace UnityEngine.UI.Extensions
         /// Sets the given items as new content for the comboBox. Previous entries will be cleared.
         /// </summary>
         /// <param name="newOptions">New entries.</param>
-        public void SetAvailableOptions(string[] newOptions)
+        public void SetAvailableOptions(ReadInput.Visitor[] newOptions)
         {
             var uniqueOptions = newOptions.Distinct().ToList();
             if (newOptions.Length != uniqueOptions.Count)
@@ -305,9 +320,9 @@ namespace UnityEngine.UI.Extensions
                 Destroy(child.gameObject);
             }
 
-            foreach (string option in AvailableOptions)
+            foreach (ReadInput.Visitor option in AvailableOptions)
             {
-                _panelItems.Add(option.ToLower());
+                _panelItems.Add(option);
             }
 
             List<GameObject> itemObjs = new List<GameObject>(panelObjects.Values);
@@ -328,7 +343,7 @@ namespace UnityEngine.UI.Extensions
                 if (i < AvailableOptions.Count)
                 {
                     itemObjs[i].name = "Item " + i + " " + _panelItems[i];
-                    itemObjs[i].transform.Find("Text").GetComponent<Text>().text = AvailableOptions[i]; //set the text value
+                    itemObjs[i].transform.Find("Text").GetComponent<Text>().text = AvailableOptions[i].GetVisitorName(); //set the text value
                     itemObjs[i].transform.Find("Text").GetComponent<Text>().font = itemFont; //set the font
                     itemObjs[i].transform.Find("Text").GetComponent<Text>().alignment = TextAnchor.MiddleLeft;  //set text's alignment
 
@@ -343,7 +358,7 @@ namespace UnityEngine.UI.Extensions
 
                     Button itemBtn = itemObjs[i].GetComponent<Button>();
                     itemBtn.onClick.RemoveAllListeners();
-                    string textOfItem = _panelItems[i]; //has to be copied for anonymous function or it gets garbage collected away
+                    ReadInput.Visitor textOfItem = _panelItems[i]; //has to be copied for anonymous function or it gets garbage collected away
                     itemBtn.onClick.AddListener(() =>
                     {
                         OnItemClicked(textOfItem);
@@ -358,13 +373,13 @@ namespace UnityEngine.UI.Extensions
         /// what happens when an item in the list is selected
         /// </summary>
         /// <param name="item"></param>
-        public void OnItemClicked(string item)
+        public void OnItemClicked(ReadInput.Visitor item)
         {
             Debug.Log("item " + item + " clicked");
-            Text = item;
+            Text = item.GetVisitorName();
             _mainInput.text = Text;
             ToggleDropdownPanel(true);
-            Debug.Log(visitor.tempInfor);
+            Debug.Log(item.GetInfor());
         }
 
         //private void UpdateSelected()
@@ -442,7 +457,14 @@ namespace UnityEngine.UI.Extensions
         {
             Text = currText;
             PruneItems(currText);
-           // RedrawPanel();
+
+
+            //  var toPrune = _panelItems.Where(x => !x.GetVisitorName().Contains(currText)).ToArray();
+            //covert items list to string using Lambda Expression
+            List<string> tempItemList = _panelItems.ConvertAll(x => x.GetVisitorName());
+
+
+            // RedrawPanel();
             //Debug.Log("value changed to: " + currText);
 
             if (_panelItems.Count == 0)
@@ -455,15 +477,16 @@ namespace UnityEngine.UI.Extensions
                 ToggleDropdownPanel(false);
             }
 
-			bool validity_changed = (_panelItems.Contains (Text) != _selectionIsValid);
-			_selectionIsValid = _panelItems.Contains (Text);
-			OnSelectionChanged.Invoke (Text, _selectionIsValid);
-			OnSelectionTextChanged.Invoke (Text);
-			if(validity_changed){
-				OnSelectionValidityChanged.Invoke (_selectionIsValid);
-			}
+            bool validity_changed = (tempItemList.Contains(Text) != _selectionIsValid);
+            _selectionIsValid = tempItemList.Contains(Text);
+            OnSelectionChanged.Invoke(Text, _selectionIsValid);
+            OnSelectionTextChanged.Invoke(Text);
+            if (validity_changed)
+            {
+                OnSelectionValidityChanged.Invoke(_selectionIsValid);
+            }
 
-			SetInputTextColor ();
+            SetInputTextColor ();
         }
 
 		private void SetInputTextColor(){
@@ -514,16 +537,16 @@ namespace UnityEngine.UI.Extensions
         private void PruneItemsLinq(string currText)
         {
             currText = currText.ToLower();
-            var toPrune = _panelItems.Where(x => !x.Contains(currText)).ToArray();
-            foreach (string key in toPrune)
+            var toPrune = _panelItems.Where(x => !x.GetVisitorName().Contains(currText)).ToArray();
+            foreach (ReadInput.Visitor key in toPrune)
             {
                 panelObjects[key].SetActive(false);
                 _panelItems.Remove(key);
                 _prunedPanelItems.Add(key);
             }
 
-            var toAddBack = _prunedPanelItems.Where(x => x.Contains(currText)).ToArray();
-            foreach (string key in toAddBack)
+            var toAddBack = _prunedPanelItems.Where(x => x.GetVisitorName().Contains(currText)).ToArray();
+            foreach (ReadInput.Visitor key in toAddBack)
             {
                 panelObjects[key].SetActive(true);
                 _panelItems.Add(key);
@@ -538,8 +561,8 @@ namespace UnityEngine.UI.Extensions
 
             for (int i = _panelItems.Count - 1; i >= 0; i--)
             {
-                string _item = _panelItems[i];
-                if (!_item.Contains(_currText))
+                ReadInput.Visitor _item = _panelItems[i];
+                if (!_item.GetVisitorName().Contains(_currText))
                 {
                     panelObjects[_panelItems[i]].SetActive(false);
                     _panelItems.RemoveAt(i);
@@ -548,8 +571,8 @@ namespace UnityEngine.UI.Extensions
             }
             for (int i = _prunedPanelItems.Count - 1; i >= 0; i--)
             {
-                string _item = _prunedPanelItems[i];
-                if (_item.Contains(_currText))
+                ReadInput.Visitor _item = _prunedPanelItems[i];
+                if (_item.GetVisitorName().Contains(_currText))
                 {
                     panelObjects[_prunedPanelItems[i]].SetActive(true);
                     _prunedPanelItems.RemoveAt(i);
