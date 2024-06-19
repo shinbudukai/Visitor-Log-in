@@ -537,7 +537,7 @@ namespace UnityEngine.UI.Extensions
         private void PruneItemsLinq(string currText)
         {
             currText = currText.ToLower();
-            var toPrune = _panelItems.Where(x => !x.GetVisitorName().Contains(currText)).ToArray();
+            var toPrune = _panelItems.Where(x => !x.GetVisitorName().ToLower().Contains(currText)).ToArray();
             foreach (ReadInput.Visitor key in toPrune)
             {
                 panelObjects[key].SetActive(false);
@@ -545,7 +545,7 @@ namespace UnityEngine.UI.Extensions
                 _prunedPanelItems.Add(key);
             }
 
-            var toAddBack = _prunedPanelItems.Where(x => x.GetVisitorName().Contains(currText)).ToArray();
+            var toAddBack = _prunedPanelItems.Where(x => x.GetVisitorName().ToLower().Contains(currText)).ToArray();
             foreach (ReadInput.Visitor key in toAddBack)
             {
                 panelObjects[key].SetActive(true);

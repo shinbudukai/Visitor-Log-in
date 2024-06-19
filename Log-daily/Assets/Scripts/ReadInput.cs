@@ -169,7 +169,7 @@ public class ReadInput : MonoBehaviour
 
         public string GetVisitorName()
         {
-            return vName.ToLower();
+            return vName;
         }
 
     }
