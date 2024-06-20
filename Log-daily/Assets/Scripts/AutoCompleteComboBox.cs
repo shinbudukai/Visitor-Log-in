@@ -48,7 +48,10 @@ namespace UnityEngine.UI.Extensions
         private RectTransform _itemsPanelRT;
         private Canvas _canvas;
         private RectTransform _canvasRT;
-        
+        private ReadInput.Visitor tempVisitor;
+        private Color disableColor = Color.grey;
+        private Color enableColor = Color.white;
+
 
         private ScrollRect _scrollRect;
 
@@ -64,6 +67,8 @@ namespace UnityEngine.UI.Extensions
         [SerializeField] ReadInput visitor;
         [SerializeField] Sprite itemImage;
         [SerializeField] Font itemFont;
+        [SerializeField] TextMeshProUGUI visitorsInforText;
+        [SerializeField] Button finishButton;
 
         [SerializeField]
         private float _scrollBarWidth = 20.0f;
@@ -309,6 +314,8 @@ namespace UnityEngine.UI.Extensions
         {
             if (_isPanelActive) ToggleDropdownPanel();
 
+            
+
             //panel starts with all options
             _panelItems.Clear();
             _prunedPanelItems.Clear();
@@ -362,12 +369,63 @@ namespace UnityEngine.UI.Extensions
                     itemBtn.onClick.AddListener(() =>
                     {
                         OnItemClicked(textOfItem);
+                        //UpdateVisitorInfor(textOfItem);
                     });
+
+                    //ReadInput.Visitor tempText = AvailableOptions[i];
+                    //finishButton.onClick.AddListener(() =>
+                    //{
+                    //    RemoveItem(tempText);
+
+
+                    //});
                     panelObjects[_panelItems[i]] = itemObjs[i];
+
+                    
                 }
+               
             }
 			SetInputTextColor ();
+
+            
         }
+
+        //define On-Off button
+        #region
+        private void ButtonDisable(Button button)
+        {
+            button.enabled = false;
+            button.gameObject.GetComponent<Image>().color = disableColor;
+        }
+
+        private void ButtonEnable(Button button)
+        {
+            button.enabled = true;
+            button.gameObject.GetComponent<Image>().color = enableColor;
+        }
+
+        #endregion
+
+
+        public void FinishButton()
+        {
+            if(tempVisitor != null)
+            {
+                RemoveItem(tempVisitor);
+                Debug.Log("Removed: " + tempVisitor.GetInfor());
+            }
+            
+
+        }
+
+
+        //display sign-out visitors infor
+        private void UpdateVisitorInfor(ReadInput.Visitor item)
+        {
+            visitorsInforText.transform.parent.gameObject.SetActive(true);
+            visitorsInforText.text = ($"Signing-Out: {item.GetInfor()}");
+        }
+
 
         /// <summary>
         /// what happens when an item in the list is selected
@@ -376,9 +434,14 @@ namespace UnityEngine.UI.Extensions
         public void OnItemClicked(ReadInput.Visitor item)
         {
             Debug.Log("item " + item + " clicked");
+            tempVisitor = item;
             Text = item.GetVisitorName();
             _mainInput.text = Text;
             ToggleDropdownPanel(true);
+            UpdateVisitorInfor(item);
+            ButtonEnable(finishButton);
+
+            Debug.Log("tempVisitor: " + tempVisitor.GetInfor());
             Debug.Log(item.GetInfor());
         }
 
@@ -455,6 +518,14 @@ namespace UnityEngine.UI.Extensions
 
         public void OnValueChanged(string currText)
         {
+            
+            //hide the signing-out board when the input field is empty.
+            if (currText == string.Empty)
+            {
+                visitorsInforText.transform.parent.gameObject.SetActive(false);
+                ButtonDisable(finishButton);
+            }
+
             Text = currText;
             PruneItems(currText);
 

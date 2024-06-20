@@ -163,7 +163,7 @@ public class ReadInput : MonoBehaviour
 
         public string GetInfor()
         {
-            string temp = $"{vName} | {vCompany} | Us: {vIsUs}";
+            string temp = $"{vName} | Company: {vCompany} | Us: {vIsUs}";
             return temp;
         }
 
